@@ -4,7 +4,7 @@ from model import *
 
 
 @app.route('/login', methods=['POST', 'GET'])
-def login():
+def login(student=None):
     if request.method == 'POST':
         id = request.form['id']
         password = request.form['password']
@@ -27,43 +27,72 @@ def login():
         else:
             return render_template('login.html', message='User not found')
     return render_template('login.html')
-@app.route('/add_exam', methods=['POST', 'GET'])
-def add_exam():
-    if request.method == 'POST':
-        name = request.form['name']
-        proffesor_id = session['id']
-        proffesor_name = proffesor.query.filter_by(id=proffesor_id).first().name
-        exam = exam(name=name, proffesor_id=proffesor_id, proffesor_name=proffesor_name)
-        db.session.add(exam)
-        db.session.commit()
-        return redirect(url_for('home'))
-    return render_template('add_exam.html')
-@app.route('/add_question/<int:id>', methods=['POST', 'GET'])
-def add_question(id):
-    if request.method == 'POST':
-        question = request.form['question']
-        exam_id = id
-        exam_name = exam.query.filter_by(id=exam_id).first().name
-        question = question(question=question, exam_id=exam_id, exam_name=exam_name)
-        db.session.add(question)
-        db.session.commit()
-        return redirect(url_for('home'))
-    return render_template('add_question.html', id=id)
-@app.route('/get_exam/<int:id>', methods=['POST', 'GET'])
-def get_exam(id):
-    student = student.query.filter_by(id=id).first()
-    if student:
-        exams = exam.query.all()
-        return render_template('get_exam.html', exams=exams)
+@app.route('/home'/'<int:id>', methods=['POST', 'GET'])
+def home(student=None,id):
+    if session.get('logged_in'):
+        id = session['id']
+        user = proffesor.query.filter_by(id=id).first()
+        student = student.query.filter_by(id=id).first()
+        if user:
+            exams = exam.query.all()
+            return render_template('home.html', exams=exams)
+        elif student:
+            exams = exam.query.all()
+            return render_template('home.html', exams=exams)
     return redirect(url_for('login'))
-@app.route('addquestion/<int:id>', methods=['POST', 'GET'])
-def exam_req(id, student=None):
-    student = student.query.filter_by(id=id).first()
-    if student:
-        questions = question.query.filter_by(exam_id=id).all()
-        return render_template('exam_question.html', questions=questions)
-    return redirect(url_for('home'))
-@app.route('/submit', methods=['POST', 'GET'])
+
+
+
+
+
+@app.route('/exam/<int:id>', methods=['POST', 'GET'])
+def exam(id):
+    if 'logged_in' in session:
+        user_id = session['id']
+        student_user = student.query.filter_by(id=user_id).first()
+        if student_user:
+            if request.method == 'POST':
+                question_id = request.form['question_id']
+                submitted_answer = request.form['answer']
+                question_obj = question.query.filter_by(id=question_id).first()
+                if question_obj:
+                    if question_obj.right_answer == submitted_answer:
+                        session['result'] = session.get('result', 0) + 1
+                    return redirect(url_for('exam', id=id))
+                else:
+                    return "Question not found", 404
+            else:
+                exams = exam.query.all()
+                return render_template('exam.html', exams=exams)
+        else:
+            return "Unauthorized access", 403
+    else:
+        return "Please log in first", 401
+
+@app.route('/result', methods=['GET'])
+def result():
+    if 'logged_in' in session:
+        result = session.get('result', 0)
+        return f"You answered {result} questions correctly."
+    else:
+        return "Please log in first", 401
+@app.route('/addquestion', methods=['POST'])
+def add_question():
+    if 'logged_in' in session:
+        user_id = session['id']
+        user = proffesor.query.filter_by(id=user_id).first()
+        if user:
+            question_text = request.form['question']
+            exam_id = request.form['exam_id']
+            new_question = question(question=question_text, exam_id=exam_id)
+            db.session.add(new_question)
+            db.session.commit()
+            return redirect(url_for('home'))
+        else:
+            return "Unauthorized access", 403
+    else:
+        return "Please log in first", 401
+
 '''
 class login(Resource):
     def post(self):

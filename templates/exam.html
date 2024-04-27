@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block body %}
+    <div class="macbook-pro-16-1">
+        <img class="macbook-pro-16-1-child" alt="" src="Frame 4.png">
+
+        <div class="form-wrapper">
+            <form method="POST" action="/exam/{{ id }}">
+                {% if exams %}
+                <div class="exams">
+                    {% for exam in exams %}
+                        <div class="exam">{{ exam.name }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <input type="text" name="student_code" placeholder="Student Code" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+    </div>
+{% endblock %}

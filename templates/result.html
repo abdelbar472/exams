@@ -1,0 +1,7 @@
+@app.route('/result', methods=['GET'])
+def result():
+    if 'logged_in' in session:
+        result = session.get('result', 0)
+        return render_template('result.html', result=result)
+    else:
+        return "Please log in first", 401

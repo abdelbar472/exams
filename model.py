@@ -17,6 +17,8 @@ class exam(db.Model):
 class question(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     question = db.Column(db.String(255), nullable=False)
+    rigth_answer = db.Column(db.String(255), nullable=false)
+    answer = db.Column(db.String(255), nullable=false)
     exam_id = db.Column(db.Integer, db.ForeignKey('exam.id'), nullable=False)
     exam_name = db.Column(db.String(255), db.ForeignKey('exam.name'))
 if __name__ == '__main__':
