@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Default Title{% endblock %}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" />
+    <style>
+           body {
+            margin: 0;
+            line-height: normal;
+        }
+
+        .macbook-pro-16-1 {
+            position: relative;
+            background-color: #3c5873;
+            height: 1117px;
+            overflow: hidden;
+            text-align: left;
+            font-size: 20px;
+            color: #000;
+            font-family: "Inter", sans-serif;
+        }
+
+        .macbook-pro-16-1-child {
+            position: absolute;
+            top: 227px;
+            left: 674px;
+            width: 380px;
+            height: 307px;
+            object-fit: cover;
+        }
+
+        .form-wrapper {
+            position: absolute;
+            top: 712px;
+            left: 361px;
+            width: 1006px;
+            height: 204px;
+            background-color: #fff;
+            border-radius: 8px;
+            border: 1px solid #000;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+
+        .form-wrapper input[type="text"],
+        .form-wrapper input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .form-wrapper input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+
+        .form-wrapper input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    {% block body %}{% endblock %}
+</body>
+</html>
